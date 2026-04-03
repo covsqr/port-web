@@ -8,6 +8,7 @@ export default function ScrollClimber() {
   const [snapY, setSnapY] = useState(0);
   const [currentY, setCurrentY] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   const [isReady, setIsReady] = useState(false);
   const [isAutoClimbing, setIsAutoClimbing] = useState(false);
@@ -114,13 +115,24 @@ export default function ScrollClimber() {
           setIsFalling(true); // 맨 위 도달 시 구역 낙하 시퀀스 돌입
 
           setTimeout(() => {
+            setIsVisible(false); // 리셋 순간 숨김 처리
             setIsFalling(false);
+            
             // 1.5초 자유 낙하 후 조용히 시작 거점으로 복귀시켜 리셋
             const docHeight = document.documentElement.scrollHeight;
             const viewHeight = window.innerHeight;
             const bottomBase = docHeight - viewHeight * 0.5;
-            targetYRef.current = Math.round(bottomBase / 100) * 100;
+            const resetY = Math.round(bottomBase / 100) * 100;
+
+            targetYRef.current = resetY;
+            setCurrentY(resetY);
+            setSnapY(resetY);
             needsInstantSnap.current = true;
+
+            // 브라우저가 위치 이동을 완료할 시간을 벌어줌 (약 50ms)
+            setTimeout(() => {
+              setIsVisible(true);
+            }, 50);
           }, 1500);
         }
 
@@ -210,6 +222,8 @@ export default function ScrollClimber() {
             flexDirection: "column",
             alignItems: "center",
             willChange: "top, transform",
+            opacity: isVisible ? 1 : 0,
+            pointerEvents: isVisible ? "auto" : "none",
           }}
         >
           <div
@@ -250,6 +264,8 @@ export default function ScrollClimber() {
             boxShadow: "0 6px 16px rgba(255, 138, 0, 0.4)",
             transition: "all 0.2s ease-in-out",
             zIndex: 50,
+            opacity: isVisible ? 1 : 0,
+            pointerEvents: isVisible ? "auto" : "none",
           }}
         >
           페이지 올라가기 🧗‍♂️
