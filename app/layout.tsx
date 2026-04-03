@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Portfolio | Black & White",
-  description: "A modern, high-contrast black and white portfolio.",
+  title: "Portfolio | Choi Junseo",
+  description: "A portfolio for SPEC assignment.",
 };
 
 export default function RootLayout({
